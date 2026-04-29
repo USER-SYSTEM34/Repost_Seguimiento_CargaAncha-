@@ -1,0 +1,183 @@
+create database seguimiento_carga_ancha;
+go
+
+use seguimiento_carga_ancha;
+go
+
+-- 1. empresa
+create table empresa (
+    id_empresa int primary key identity(1,1),
+    razon_social nvarchar(150),
+    ruc nvarchar(20) unique,
+    direccion nvarchar(200),
+    telefono nvarchar(20)
+);
+
+-- 2. vehiculo
+create table vehiculo (
+    id_vehiculo int primary key identity(1,1),
+    id_empresa int foreign key references empresa(id_empresa),
+    placa nvarchar(20) unique not null,
+    marca nvarchar(50),
+    modelo nvarchar(50),
+    anio int,
+    capacidad_toneladas decimal(10,2)
+);
+
+-- 3. conductor
+create table conductor (
+    id_conductor int primary key identity(1,1),
+    nombre nvarchar(50),
+    apellido nvarchar(50),
+    licencia nvarchar(20) unique,
+    telefono nvarchar(20)
+);
+
+-- 4. ruta
+create table ruta (
+    id_ruta int primary key identity(1,1),
+    origen nvarchar(100),
+    destino nvarchar(100),
+    distancia_km decimal(10,2)
+);
+
+-- 5. monitoreo
+create table monitoreo (
+    id_monitoreo int primary key identity(1,1),
+    id_vehiculo int foreign key references vehiculo(id_vehiculo),
+    id_conductor int foreign key references conductor(id_conductor),
+    id_ruta int foreign key references ruta(id_ruta),
+    fecha_salida datetime,
+    fecha_llegada datetime null,
+    estado nvarchar(30)
+);
+
+-- 6. consumo_combustible
+create table consumo_combustible (
+    id_consumo int primary key identity(1,1),
+    id_monitoreo int foreign key references monitoreo(id_monitoreo),
+    cantidad_litros decimal(10,2),
+    costo_total decimal(10,2),
+    fecha_registro datetime default getdate()
+);
+
+-- 7. incidencia
+create table incidencia (
+    id_incidencia int primary key identity(1,1),
+    id_monitoreo int foreign key references monitoreo(id_monitoreo),
+    tipo nvarchar(50),
+    descripcion nvarchar(200),
+    fecha datetime
+);
+
+-- 8. mantenimiento
+create table mantenimiento (
+    id_mantenimiento int primary key identity(1,1),
+    id_vehiculo int foreign key references vehiculo(id_vehiculo),
+    descripcion nvarchar(200),
+    fecha date,
+    costo decimal(10,2)
+);
+
+-- 9. proveedor
+create table proveedor (
+    id_proveedor int primary key identity(1,1),
+    nombre nvarchar(100),
+    ruc nvarchar(20) unique,
+    telefono nvarchar(20),
+    direccion nvarchar(200)
+);
+
+-- 10. repuesto
+create table repuesto (
+    id_repuesto int primary key identity(1,1),
+    id_proveedor int foreign key references proveedor(id_proveedor),
+    nombre nvarchar(100),
+    precio decimal(10,2),
+    stock int
+);
+go
+
+-- insercion de datos
+
+insert into empresa (razon_social, ruc, direccion, telefono)
+values ('transporte pesado del sur s.a.c.', '20305354563', 'av. industrial 123, lurin - lima', '987654321'),
+       ('carga ancha andina s.r.l.', '20456789012', 'av. la cultura 456, cusco', '912345678'),
+       ('logistica del norte sac', '20567890123', 'av. panamericana 789, trujillo', '976543210'),
+       ('transportes internacionales volvo sac', '20678901234', 'av. javier prado 321, lima', '934567890'),
+       ('megacarga peru e.i.r.l.', '20789012345', 'av. grau 654, arequipa', '945678901'),
+       ('altiplano cargo s.a.', '20890123456', 'jr. puno 321, puno', '987111222'),
+       ('amazonas express s.r.l.', '20901234567', 'av. selva alegre 789, chachapoyas', '987333444'),
+       ('logistica sur andina sac', '21012345678', 'av. mariscal gamarra 456, juliaca', '987444555'),
+       ('transporte rapido norte s.a.', '21123456789', 'av. libertad 789, chiclayo', '987555666'),
+       ('carga internacional andes sac', '21234567890', 'av. los incas 123, huancayo', '987666777');
+
+insert into vehiculo (id_empresa, placa, marca, modelo, anio, capacidad_toneladas)
+values (1, 'abc-123', 'volvo', 'fh16', 2022, 25.5),
+       (1, 'xyz-789', 'scania', 'r500', 2023, 30.0),
+       (2, 'lmn-456', 'mercedes', 'actros', 2021, 28.0),
+       (3, 'jkl-321', 'man', 'tgx', 2020, 26.0),
+       (4, 'vol-777', 'volvo', 'fmx', 2024, 32.0),
+       (5, 'ive-888', 'iveco', 'stralis', 2022, 27.5),
+       (6, 'daf-999', 'daf', 'xf', 2023, 29.0),
+       (7, 'mer-222', 'mercedes', 'axor', 2019, 27.0),
+       (8, 'sca-333', 'scania', 'g410', 2021, 28.5),
+       (9, 'man-444', 'man', 'tgs', 2022, 30.0);
+
+insert into conductor (nombre, apellido, licencia, telefono)
+values ('juan', 'perez', 'lic12345', '912345678'),
+       ('maria', 'lopez', 'lic67890', '987654321'),
+       ('carlos', 'quispe', 'lic54321', '976543210'),
+       ('ana', 'torres', 'lic98765', '934567890'),
+       ('luis', 'huaman', 'lic24680', '945678901'),
+       ('jorge', 'ramirez', 'lic11111', '987111333'),
+       ('sofia', 'mendoza', 'lic22222', '987222444'),
+       ('pedro', 'gutierrez', 'lic33333', '987333555'),
+       ('rosa', 'flores', 'lic44444', '987444666'),
+       ('miguel', 'castro', 'lic55555', '987555777');
+
+insert into ruta (origen, destino, distancia_km)
+values ('cusco', 'arequipa', 480.5),
+       ('lima', 'trujillo', 560.0),
+       ('puno', 'tacna', 320.0),
+       ('lima', 'cusco', 1100.0),
+       ('arequipa', 'moquegua', 180.0),
+       ('iquitos', 'tarapoto', 370.0),
+       ('huancayo', 'lima', 300.0),
+       ('piura', 'chiclayo', 210.0),
+       ('trujillo', 'chimbote', 130.0),
+       ('ayacucho', 'ica', 420.0);
+
+insert into monitoreo (id_vehiculo, id_conductor, id_ruta, fecha_salida, estado)
+values (1, 1, 1, '2026-04-25 08:00:00', 'finalizado'),
+       (2, 2, 2, '2026-04-26 07:00:00', 'en transito'),
+       (3, 3, 3, '2026-04-27 06:30:00', 'programado'),
+       (4, 4, 4, '2026-04-28 09:00:00', 'finalizado'),
+       (5, 5, 5, '2026-04-29 05:30:00', 'en transito'),
+       (6, 6, 6, '2026-05-01 07:00:00', 'programado'),
+       (7, 7, 7, '2026-05-02 08:00:00', 'en transito'),
+       (8, 8, 8, '2026-05-03 09:00:00', 'finalizado'),
+       (9, 9, 9, '2026-05-04 06:30:00', 'en transito'),
+       (10, 10, 10, '2026-05-05 10:00:00', 'programado');
+
+insert into consumo_combustible (id_monitoreo, cantidad_litros, costo_total)
+values (1, 120.50, 1800.00),
+       (4, 350.00, 5200.00),
+       (8, 50.00, 750.00);
+
+insert into incidencia (id_monitoreo, tipo, descripcion, fecha)
+values (2, 'mecanico', 'falla en el motor de arranque', '2026-04-26 10:00:00'),
+       (5, 'clima', 'retraso por lluvia fuerte', '2026-04-29 11:30:00');
+
+insert into mantenimiento (id_vehiculo, descripcion, fecha, costo)
+values (1, 'cambio de aceite y filtros', '2026-04-10', 1200.00),
+       (2, 'revision de frenos', '2026-04-12', 800.00);
+
+insert into proveedor (nombre, ruc, telefono, direccion)
+values ('repuestos express sac', '20998877665', '999888777', 'av. la marina 450, lima'),
+       ('lubricantes peruanos sa', '20554433221', '955444333', 'jr. industrial 200, callao');
+
+insert into repuesto (id_proveedor, nombre, precio, stock)
+values (1, 'pastillas de freno', 250.00, 10),
+       (2, 'aceite motor 15w40', 180.00, 40);
+go
