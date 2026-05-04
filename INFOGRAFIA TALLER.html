@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión y Monitoreo de Carga Ancha</title>
+  <style>
+    body { font-family: "Segoe UI", Arial, sans-serif; margin: 0; background-color: #f0f4fa; color: #2c3e50; }
+    header { background-color: #1a3c6e; color: #fff; padding: 30px; text-align: center; }
+    header h1 { margin: 0; font-size: 34px; }
+    header h2 { margin: 5px 0; font-size: 22px; font-weight: normal; }
+    header p { margin: 3px 0; font-size: 16px; }
+    .integrantes { margin-top: 20px; text-align: center; }
+    .integrantes h3 { margin-bottom: 10px; font-size: 18px; color: #f0f4fa; }
+    .integrantes ul { list-style: none; padding: 0; margin: 0; }
+    .integrantes li { margin: 10px 0; background: #f9fbfd; color: #2c3e50; padding: 12px; border-radius: 6px; width: 280px; margin-left: auto; margin-right: auto; }
+    .container { max-width: 1200px; margin: auto; padding: 40px; }
+    section { margin-bottom: 40px; padding: 25px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    section h2 { border-bottom: 2px solid #1a3c6e; padding-bottom: 10px; margin-bottom: 15px; color: #1a3c6e; }
+    .tabla { border-collapse: collapse; width: 100%; margin-top: 15px; }
+    .tabla th, .tabla td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    .tabla th { background-color: #1a3c6e; color: #fff; }
+    .highlight { background-color: #f9fbfd; }
+    ul { margin-left: 25px; }
+    footer { background-color: #1a3c6e; color: #fff; text-align: center; padding: 20px; margin-top: 30px; }
+    .emoji { font-size: 20px; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gestión y Monitoreo de Carga Ancha</h1>
+    <h2>Universidad Andina del Cusco</h2>
+    <h2>Facultad de Ingeniería y Arquitectura</h2>
+    <h2>Escuela Profesional de Ingeniería de Sistemas</h2>
+    <p><strong>Taller 2.4 – Acceso a Datos</strong></p>
+    <p>Docente: Ing. Hugo Espetia Huamanga</p>
+    <div class="integrantes">
+      <h3>Integrantes</h3>
+      <ul>
+        <li><strong>Achahui Zans Sebastián Cristóbal</strong><br>Participación: 100%</li>
+        <li><strong>Chuquitapa Flores Kefren Darly</strong><br>Participación: 100%</li>
+      </ul>
+    </div>
+    <p><em>Cusco – 2026</em></p>
+  </header>
+
+  <div class="container">
+    <section>
+      <h2>⚠️ Problema que Resuelve</h2>
+      <p>Las empresas de transporte de carga ancha necesitan gestionar de forma centralizada el seguimiento de viajes, conductores, vehículos, consumo de combustible, incidencias, mantenimientos y repuestos. Sin un sistema integrado, la información queda dispersa en hojas de cálculo y documentos físicos, generando ineficiencias, pérdida de trazabilidad y mayor riesgo de accidentes.</p>
+      <p>El sistema propuesto centraliza esta información en una base de datos relacional, exponiendo 10 consultas clave en una interfaz WinForms, permitiendo a los supervisores consultar el estado de flotas, costos operativos e historial de incidencias en tiempo real.</p>
+    </section>
+
+    <section>
+      <h2>📖 Introducción</h2>
+      <p>El trabajo aplica principios de modelado de base de datos y su integración con Entity Framework (ORM) en el desarrollo de una solución de gestión mediante WinForms. Se demuestra cómo un diseño robusto de tablas y relaciones permite consultas de diversa complejidad, desde CRUD hasta cálculos estadísticos.</p>
+    </section>
+
+    <section>
+      <h2>🗂️ Modelo de Base de Datos</h2>
+      <table class="tabla">
+        <tr><th>Tabla</th><th>Clave Primaria</th><th>Relaciones</th></tr>
+        <tr><td>Empresa</td><td>id_empresa</td><td>Vehículo</td></tr>
+        <tr class="highlight"><td>Vehículo</td><td>id_vehiculo</td><td>Empresa, Monitoreo, Mantenimiento</td></tr>
+        <tr><td>Conductor</td><td>id_conductor</td><td>Monitoreo</td></tr>
+        <tr class="highlight"><td>Ruta</td><td>id_ruta</td><td>Monitoreo</td></tr>
+        <tr><td>Monitoreo</td><td>id_monitoreo</td><td>Vehículo, Conductor, Ruta, Consumo, Incidencia</td></tr>
+        <tr class="highlight"><td>Consumo_Combustible</td><td>id_consumo</td><td>Monitoreo</td></tr>
+        <tr><td>Incidencia</td><td>id_incidencia</td><td>Monitoreo</td></tr>
+        <tr class="highlight"><td>Mantenimiento</td><td>id_mantenimiento</td><td>Vehículo</td></tr>
+        <tr><td>Proveedor</td><td>id_proveedor</td><td>Repuesto</td></tr>
+        <tr class="highlight"><td>Repuesto</td><td>id_repuesto</td><td>Proveedor</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>🔎 Clasificación de Consultas</h2>
+      <h3>Básicas (CRUD)</h3>
+      <ul><li>Listar conductores</li><li>Listar empresas</li></ul>
+      <h3>Intermedias (JOIN)</h3>
+      <ul><li>Vehículos con empresa</li><li>Rutas disponibles</li><li>Monitoreos detallados</li><li>Consumo de combustible</li></ul>
+      <h3>Avanzadas (JOIN + lógica)</h3>
+      <ul><li>Incidencias con detalle</li><li>Mantenimientos</li><li>Proveedores</li><li>Repuestos con proveedor</li></ul>
+    </section>
+
+    <section>
+      <h2>💻 Integración Técnica</h2>
+      <p><strong>SQL Server:</strong> Creación de la base de datos <em>SeguimientoCargaAnchaDB</em> con tablas y datos de prueba.</p>
+      <p><strong>ADO.NET:</strong> Conexión inicial y ejecución de consultas en WinForms.</p>
+      <p><strong>Entity Framework:</strong> Mapeo de entidades y relaciones con <em>Navigation Properties</em>.</p>
+      <p><strong>Visual Studio:</strong> Interfaz gráfica que permite ejecutar las 10 consultas desde botones y mostrar resultados dinámicos.</p>
+    </section>
+
+    <section>
+      <h2>✅ Conclusión</h2>
+      <p>El proyecto demostró la importancia de un diseño de base de datos sólido y normalizado como fundamento para aplicaciones de gestión. La implementación de las 10 tablas interrelacionadas garantizó coherencia y escalabilidad, mientras que el uso de Entity Framework facilitó la interacción con la base de datos desde la aplicación en WinForms. Las consultas, desde CRUD hasta reportes avanzados, evidencian la capacidad del modelo para responder a necesidades reales de una empresa de transporte. En conjunto, la integración entre modelado relacional, ADO.NET, ORM y aplicación de escritorio constituye una solución eficiente y adaptable para la gestión y monitoreo de operaciones logísticas.</p>
+    </section>
+
+    <section>
+      <h2>📚 Referencias</h2>
+      <p>Microsoft. (2024). <em>Transact-SQL Reference (Database Engine)</em>. Recuperado de https://docs.microsoft.com/en-us/sql/t-sql/</
